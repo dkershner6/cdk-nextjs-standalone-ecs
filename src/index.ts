@@ -21,18 +21,18 @@ export const DEFAULT_NEXTJS_LOG_STREAM_PREFIX = 'nextjs-standalone-ecs-site';
 export const NEXTJS_VOLUME_NAME = 'nextjs-standalone-volume';
 
 export interface NextjsStandaloneEcsSiteProps {
-  vpc: ec2.IVpc;
+  readonly vpc: ec2.IVpc;
   /**
      * Must be on an ELB within the provided VPC.
      */
-  elbTargetGroup: elb.IApplicationTargetGroup;
+  readonly elbTargetGroup: elb.IApplicationTargetGroup;
 
   /**
      * The port on which the file system is available.
      *
      * @default 2049
      */
-  fileSystemPort?: number;
+  readonly fileSystemPort?: number;
 
   /**
      * Set your desired CPU architecture.
@@ -42,96 +42,99 @@ export interface NextjsStandaloneEcsSiteProps {
      *
      * @default ecs.CpuArchitecture.X86_64
      */
-  cpuArchitecture?: ecs.CpuArchitecture;
+  readonly cpuArchitecture?: ecs.CpuArchitecture;
 
   /**
      * The POSIX user ID of the next.js docker user.
      *
      * @default "1001"
      */
-  uid?: string;
+  readonly uid?: string;
   /**
      * The POSIX group ID of the next.js docker user.
      *
      * @default "1001"
      */
-  gid?: string;
+  readonly gid?: string;
 
   /**
      * The port on which the Next.js application is available inside the container.
      *
      * @default 3000
      */
-  nextjsContainerPort?: number;
+  readonly nextjsContainerPort?: number;
 
   /**
      * The log stream prefix where the container's logs will be stored in Cloudwatch Logs.
      *
      * @default "nextjs-standalone-ecs-site"
      */
-  logStreamPrefix?: string;
+  readonly logStreamPrefix?: string;
 
   /**
+     * "vpc" handled by this construct, do not recommend providing (JSII will not let us omit).
+     *
      * Deviations from default settings:
      * - "enableFargateCapacityProviders" is set to true.
      */
-  clusterProps?: Omit<
-  ecs.ClusterProps,
-  'vpc' | 'enableFargateCapacityProviders'
-  >;
+  readonly clusterProps?:
+  ecs.ClusterProps;
 
   /**
+     * "vpc" handled by this construct, do not recommend providing (JSII will not let us omit).
+     *
      * Deviations from default settings:
      * - "encrypted" is set to true.
      * - "lifecyclePolicy" is set to "AFTER_90_DAYS" in order to transition old builds to the IA class.
      * - "removalPolicy" is set to DESTROY.
      */
-  fileSystemProps?: Omit<efs.FileSystemProps, 'vpc'>;
+  readonly fileSystemProps?: efs.FileSystemProps;
 
   /**
-     * Complete deviation from default settings.
-     */
-  fileSystemAccessPointProps?: Omit<efs.AccessPointProps, 'fileSystem'>;
+    * "fileSystem" handled by this construct, do not recommend providing (JSII will not let us omit).
+    *
+    * Complete deviation from default settings.
+    */
+  readonly fileSystemAccessPointProps?: efs.AccessPointProps;
 
   /**
-     * "runtimePlatform" handled by this construct.
+     * "runtimePlatform" handled by this construct, do not recommend providing (JSII will not let us omit).
      *
      * No other deviations from default settings.
      */
-  taskDefinitionProps?: Omit<
-  ecs.FargateTaskDefinitionProps,
-  'runtimePlatform'
-  >;
+  readonly taskDefinitionProps?:
+  ecs.FargateTaskDefinitionProps;
 
   /**
+     * "platform" handled by this construct, do not recommend providing (JSII will not let us omit).
+     *
      * Docker Images must be created for every environment due to changing environment variables.
      *
      * Deviations from default settings:
-     * - "directory" is optional, and defaults to "./".
-     * - "platform" is handled by this construct ot coincide with ECS.
+     * - "directory" defaults to "./".
+     * - "platform" is handled by this construct to coincide with ECS.
      */
-  dockerImageAssetProps?: Omit<
-  ecrAssets.DockerImageAssetProps,
-  'directory' | 'platform'
-  > &
-  Partial<Pick<ecrAssets.DockerImageAssetProps, 'directory'>>;
+  readonly dockerImageAssetProps?:
+  ecrAssets.DockerImageAssetProps;
 
   /**
+     * "image" and "taskDefinition" handled by this construct, do not recommend providing (JSII will not let us omit).
+     *
      * Complete deviation from default settings (as is required), but this is provided for overrides.
      *
      * This will create an appropriate health check for the Next.js application, set sensible logging, the image, and the port.
      */
-  containerProps?: Omit<
-  ecs.ContainerDefinitionProps,
-  'image' | 'taskDefinition'
-  >;
+  readonly containerProps?:
+  ecs.ContainerDefinitionProps;
 
   /**
+     * "cluster" and "taskDefinition" handled by this construct, do not recommend providing (JSII will not let us omit).
+     *
      * Deviations from default settings:
      * - "assignPublicIp" is set to true, rather than false. This is done because most Next.js applications are public.
      *   If you would rather use a NatGateway, you can override this prop.
      */
-  serviceProps?: Omit<ecs.FargateServiceProps, 'cluster' | 'taskDefinition'>;
+  readonly serviceProps?: ecs.FargateServiceProps;
 }
 
 export class NextjsStandaloneEcsSite extends Construct {
