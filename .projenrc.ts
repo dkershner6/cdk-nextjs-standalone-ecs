@@ -1,8 +1,8 @@
 import { awscdk } from 'projen';
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Derek Kershner',
-  authorAddress: 'dkershner@dkershner.com',
-  cdkVersion: '2.1.0',
+  authorAddress: 'https://dkershner.com',
+  cdkVersion: '2.77.0',
   defaultReleaseBranch: 'main',
   jsiiVersion: '~5.0.0',
   name: 'cdk-nextjs-standalone-ecs',
@@ -10,8 +10,10 @@ const project = new awscdk.AwsCdkConstructLibrary({
   repositoryUrl: 'https://github.com/dkershner/cdk-nextjs-standalone-ecs.git',
 
   // deps: [],                /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
+  description: 'A CDK Construct for Next.js to deploy to an ISR capable ECS Fargate Service and Task',
   // devDeps: [],             /* Build dependencies for this module. */
-  // packageName: undefined,  /* The "name" in package.json. */
+  packageName: 'cdk-nextjs-standalone-ecs', /* The "name" in package.json. */
+
+  stability: 'experimental',
 });
 project.synth();
