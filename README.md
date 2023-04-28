@@ -1,5 +1,7 @@
 # Next.js Standalone ECS Site
 
+[NPM Package](https://www.npmjs.com/package/cdk-nextjs-standalone-ecs)
+
 This is a standalone ECS site that uses Next.js and is deployed to AWS ECS.
 
 It employs AWS EFS to share the `.next` directory between containers to facilitate proper Incremental Static Regeneration.
