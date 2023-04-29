@@ -2,9 +2,11 @@
 
 [NPM Package](https://www.npmjs.com/package/cdk-nextjs-standalone-ecs)
 
-This is a standalone ECS site that uses Next.js and is deployed to AWS ECS.
+[![View on Construct Hub](https://constructs.dev/badge?package=cdk-nextjs-standalone-ecs)](https://constructs.dev/packages/cdk-nextjs-standalone-ecs)
 
-It employs AWS EFS to share the `.next` directory between containers to facilitate proper Incremental Static Regeneration.
+Deploy a Next.js site to AWS ECS supporting all version 13 features, including properly functioning, efficient Incremental Static Regeneration and Image Optimization.
+
+This construct employs AWS EFS to share the `.next` directory between containers, as is [recommended by Vercel](https://nextjs.org/docs/basic-features/data-fetching/incremental-static-regeneration#self-hosting-isr).
 
 ## Getting Started
 
