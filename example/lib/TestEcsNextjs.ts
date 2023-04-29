@@ -105,7 +105,11 @@ export class TestEcsNextjsStack extends cdk.Stack {
                             ARBITRARY_CLOUDFRONT_HEADER_VALUE,
                     },
                 }),
-                cachePolicy: cloudfront.CachePolicy.AMPLIFY,
+                cachePolicy: new cloudfront.CachePolicy(
+                    this, 
+                    "CachePolicy", 
+                    NextjsStandaloneEcsSite.RECOMMENDED_CACHE_POLICY
+                ),
                 viewerProtocolPolicy:
                     cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             },

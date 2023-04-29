@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecrAssets from 'aws-cdk-lib/aws-ecr-assets';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
@@ -11,7 +12,7 @@ import { NextjsStandaloneEcsClusterProps, NextjsStandaloneEcsContainerDefinition
 export const DEFAULT_NEXTJS_DOCKER_USER_UID = '1001';
 export const DEFAULT_NEXTJS_DOCKER_USER_GID = '1001';
 export const DEFAULT_NEXTJS_FILE_SYSTEM_ACCESS_POINT_PATH =
-    '/nextjs-standalone-ecs-site';
+  '/nextjs-standalone-ecs-site';
 export const DEFAULT_NEXTJS_FILE_SYSTEM_PORT = 2049;
 export const DEFAULT_NEXTJS_ECS_CPU_ARCHITECTURE = ecs.CpuArchitecture.X86_64;
 
@@ -136,6 +137,29 @@ export interface NextjsStandaloneEcsSiteProps {
  * This construct can also be used with only a VPC and ALB, with no caching or custom domain, or behind a Route53 domain and Cloudfront.
  */
 export class NextjsStandaloneEcsSite extends Construct {
+  /**
+   * Included for convenience, this cache policy is very similar to Amplify's cache policy,
+   * but with a higher maxTtl.
+   */
+  public static readonly RECOMMENDED_CACHE_POLICY: cloudfront.CachePolicyProps =
+    {
+      queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+      headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
+        'Accept-Encoding',
+        'Authorization',
+        'CloudFront-Viewer-Country',
+        'Host',
+      ),
+      cookieBehavior: cloudfront.CacheCookieBehavior.all(),
+      defaultTtl: cdk.Duration.seconds(0),
+      maxTtl: cdk.Duration.days(365),
+      minTtl: cdk.Duration.seconds(0),
+      enableAcceptEncodingBrotli: true,
+      enableAcceptEncodingGzip: true,
+      comment: 'Next.js Standalone Site Cache Policy',
+    };
+
+
   private readonly account: string;
   private readonly region: string;
 
@@ -151,6 +175,7 @@ export class NextjsStandaloneEcsSite extends Construct {
 
   public readonly container: ecs.ContainerDefinition;
   public readonly service: ecs.FargateService;
+
 
   constructor(
     scope: Construct,
@@ -224,8 +249,8 @@ export class NextjsStandaloneEcsSite extends Construct {
         runtimePlatform: {
           operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
           cpuArchitecture:
-                        this.props.cpuArchitecture ??
-                        DEFAULT_NEXTJS_ECS_CPU_ARCHITECTURE,
+            this.props.cpuArchitecture ??
+            DEFAULT_NEXTJS_ECS_CPU_ARCHITECTURE,
         },
       },
     );
@@ -261,8 +286,8 @@ export class NextjsStandaloneEcsSite extends Construct {
         fileSystemId: this.fileSystem.fileSystemId,
         transitEncryption: 'ENABLED',
         transitEncryptionPort:
-                    this.props.fileSystemPort ??
-                    DEFAULT_NEXTJS_FILE_SYSTEM_PORT,
+          this.props.fileSystemPort ??
+          DEFAULT_NEXTJS_FILE_SYSTEM_PORT,
         authorizationConfig: {
           accessPointId: this.fileSystemAccessPoint.accessPointId,
           iam: 'ENABLED',
@@ -281,12 +306,12 @@ export class NextjsStandaloneEcsSite extends Construct {
       `${this.id}-DockerImageAsset`,
       {
         directory:
-                    this.props.dockerImageAssetProps?.directory ??
-                    DEFAULT_PATH_TO_DOCKERFILE,
+          this.props.dockerImageAssetProps?.directory ??
+          DEFAULT_PATH_TO_DOCKERFILE,
         platform:
-                    this.props.cpuArchitecture === ecs.CpuArchitecture.ARM64
-                      ? ecrAssets.Platform.LINUX_ARM64
-                      : undefined, // Bug currently where there is no X64_86 option.
+          this.props.cpuArchitecture === ecs.CpuArchitecture.ARM64
+            ? ecrAssets.Platform.LINUX_ARM64
+            : undefined, // Bug currently where there is no X64_86 option.
         ...this.props.dockerImageAssetProps,
       },
     );
@@ -294,7 +319,7 @@ export class NextjsStandaloneEcsSite extends Construct {
 
   private createContainer(): ecs.ContainerDefinition {
     const nextJsPort =
-            this.props.nextjsContainerPort ?? DEFAULT_NEXTJS_CONTAINER_PORT;
+      this.props.nextjsContainerPort ?? DEFAULT_NEXTJS_CONTAINER_PORT;
 
     const container = this.taskDefinition.addContainer(
       `${this.id}-Container`,
@@ -305,8 +330,8 @@ export class NextjsStandaloneEcsSite extends Construct {
         portMappings: [{ containerPort: nextJsPort }],
         logging: ecs.LogDrivers.awsLogs({
           streamPrefix:
-                        this.props.logStreamPrefix ??
-                        DEFAULT_NEXTJS_LOG_STREAM_PREFIX,
+            this.props.logStreamPrefix ??
+            DEFAULT_NEXTJS_LOG_STREAM_PREFIX,
         }),
         healthCheck: {
           command: [
@@ -343,7 +368,7 @@ export class NextjsStandaloneEcsSite extends Construct {
     );
 
     const efsPort =
-            this.props.fileSystemPort ?? DEFAULT_NEXTJS_FILE_SYSTEM_PORT;
+      this.props.fileSystemPort ?? DEFAULT_NEXTJS_FILE_SYSTEM_PORT;
 
     service.connections.allowFrom(
       this.fileSystem,
