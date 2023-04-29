@@ -145,7 +145,6 @@ export class NextjsStandaloneEcsSite extends Construct {
     {
       queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
       headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
-        'Accept-Encoding',
         'Authorization',
         'CloudFront-Viewer-Country',
         'Host',
