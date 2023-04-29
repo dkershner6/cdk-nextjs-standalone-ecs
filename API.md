@@ -4,6 +4,8 @@
 
 [![View on Construct Hub](https://constructs.dev/badge?package=cdk-nextjs-standalone-ecs)](https://constructs.dev/packages/cdk-nextjs-standalone-ecs)
 
+_Have a very simple use case for Next.js? Perhaps akin to what you would use a SPA (single page app) for? Check out [cdk-nextjs-export-s3-dynamic-routing](https://constructs.dev/packages/cdk-nextjs-export-s3-dynamic-routing)
+
 Deploy a Next.js site to AWS ECS supporting all version 13 features, including properly functioning, efficient Incremental Static Regeneration and Image Optimization.
 
 This construct employs AWS EFS to share the `.next` directory between containers, as is [recommended by Vercel](https://nextjs.org/docs/basic-features/data-fetching/incremental-static-regeneration#self-hosting-isr).
