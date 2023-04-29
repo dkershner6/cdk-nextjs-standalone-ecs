@@ -246,6 +246,25 @@ public readonly volume: Volume;
 
 ---
 
+#### Constants <a name="Constants" id="Constants"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.RECOMMENDED_CACHE_POLICY">RECOMMENDED_CACHE_POLICY</a></code> | <code>aws-cdk-lib.aws_cloudfront.CachePolicyProps</code> | Included for convenience, this cache policy is very similar to Amplify's cache policy, but with a higher maxTtl. |
+
+---
+
+##### `RECOMMENDED_CACHE_POLICY`<sup>Required</sup> <a name="RECOMMENDED_CACHE_POLICY" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.RECOMMENDED_CACHE_POLICY"></a>
+
+```typescript
+public readonly RECOMMENDED_CACHE_POLICY: CachePolicyProps;
+```
+
+- *Type:* aws-cdk-lib.aws_cloudfront.CachePolicyProps
+
+Included for convenience, this cache policy is very similar to Amplify's cache policy, but with a higher maxTtl.
+
+---
 
 ## Structs <a name="Structs" id="Structs"></a>
 

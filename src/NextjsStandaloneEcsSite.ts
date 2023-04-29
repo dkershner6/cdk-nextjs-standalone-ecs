@@ -141,7 +141,7 @@ export class NextjsStandaloneEcsSite extends Construct {
    * Included for convenience, this cache policy is very similar to Amplify's cache policy,
    * but with a higher maxTtl.
    */
-  public static RECOMMENDED_CACHE_POLICY: cloudfront.CachePolicyProps =
+  public static readonly RECOMMENDED_CACHE_POLICY: cloudfront.CachePolicyProps =
     {
       queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
       headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
