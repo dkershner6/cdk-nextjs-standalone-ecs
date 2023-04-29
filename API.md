@@ -6,9 +6,20 @@ This is a standalone ECS site that uses Next.js and is deployed to AWS ECS.
 
 It employs AWS EFS to share the `.next` directory between containers to facilitate proper Incremental Static Regeneration.
 
-A Usage Guide will be available soon.
+## Getting Started
+
+A full example including custom domain, SSL, and Cloudfront is in the `/example` folder. This construct can also be used with only a VPC and ALB as well, with no caching or custom domain.
+
+You can see the requirements for this construct there, but they are also spelled out in detail below.
+
+The full API of this construct is available in the [API.md](API.md) file.
 
 ## Requirements
+
+### next.config.?s
+
+- `output` must be set to `standalone`. This is what Vercel recommends for Docker based deployments.
+- `experimental.isrMemoryCacheSize` must be set to zero. Without this, you can get odd responses when using ISR and having multiple containers.
 
 ### Scripts
 
@@ -38,11 +49,18 @@ ENTRYPOINT ["sh","./startup.sh"]
 ```
 
 Instead of any CMD or existing ENTRYPOINT. You can add to startup.sh if you need to run additional commands before the container starts.
+
 # API Reference <a name="API Reference" id="api-reference"></a>
 
 ## Constructs <a name="Constructs" id="Constructs"></a>
 
 ### NextjsStandaloneEcsSite <a name="NextjsStandaloneEcsSite" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite"></a>
+
+This is a standalone ECS site that uses Next.js and is deployed to AWS ECS.
+
+It employs AWS EFS to share the `.next` directory between containers to facilitate proper Incremental Static Regeneration.
+
+This construct can also be used with only a VPC and ALB, with no caching or custom domain, or behind a Route53 domain and Cloudfront.
 
 #### Initializers <a name="Initializers" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.Initializer"></a>
 
