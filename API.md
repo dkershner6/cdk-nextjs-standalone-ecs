@@ -6,9 +6,18 @@ This is a standalone ECS site that uses Next.js and is deployed to AWS ECS.
 
 It employs AWS EFS to share the `.next` directory between containers to facilitate proper Incremental Static Regeneration.
 
-A Usage Guide will be available soon.
+## Getting Started
+
+A full example including custom domain, SSL, and Cloudfront is in the `/example` folder. This construct can also be used with only a VPC and ALB as well, with no caching or custom domain.
+
+You can see the requirements for this construct there, but they are also spelled out in detail below.
 
 ## Requirements
+
+### next.config.?s
+
+- `output` must be set to `standalone`. This is what Vercel recommends for Docker based deployments.
+- `experimental.isrMemoryCacheSize` must be set to zero. Without this, you can get odd responses when using ISR and having multiple containers.
 
 ### Scripts
 
@@ -102,7 +111,7 @@ Returns a string representation of this construct.
 
 ---
 
-##### ~~`isConstruct`~~ <a name="isConstruct" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.isConstruct"></a>
+##### `isConstruct` <a name="isConstruct" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.isConstruct"></a>
 
 ```typescript
 import { NextjsStandaloneEcsSite } from 'cdk-nextjs-standalone-ecs'
@@ -111,6 +120,20 @@ NextjsStandaloneEcsSite.isConstruct(x: any)
 ```
 
 Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
 
 ###### `x`<sup>Required</sup> <a name="x" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.isConstruct.parameter.x"></a>
 

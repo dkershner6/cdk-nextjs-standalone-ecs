@@ -128,6 +128,13 @@ export interface NextjsStandaloneEcsSiteProps {
   readonly serviceProps?: NextjsStandaloneEcsFargateServiceProps;
 }
 
+/**
+ * This is a standalone ECS site that uses Next.js and is deployed to AWS ECS.
+ *
+ * It employs AWS EFS to share the `.next` directory between containers to facilitate proper Incremental Static Regeneration.
+ *
+ * This construct can also be used with only a VPC and ALB, with no caching or custom domain, or behind a Route53 domain and Cloudfront.
+ */
 export class NextjsStandaloneEcsSite extends Construct {
   private readonly account: string;
   private readonly region: string;
@@ -167,11 +174,15 @@ export class NextjsStandaloneEcsSite extends Construct {
   }
 
   private createCluster(): ecs.Cluster {
-    return new ecs.Cluster(this, `${this.id}-Cluster`, {
+    const cluster = new ecs.Cluster(this, `${this.id}-Cluster`, {
       ...this.props.clusterProps,
       vpc: this.props.vpc,
       enableFargateCapacityProviders: true,
     });
+
+    cluster.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
+
+    return cluster;
   }
 
   private createFileSystem(): efs.FileSystem {
