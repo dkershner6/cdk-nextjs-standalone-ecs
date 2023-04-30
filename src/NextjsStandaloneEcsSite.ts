@@ -309,8 +309,8 @@ export class NextjsStandaloneEcsSite extends Construct {
           DEFAULT_PATH_TO_DOCKERFILE,
         platform:
           this.props.cpuArchitecture === ecs.CpuArchitecture.ARM64
-            ? ecrAssets.Platform.LINUX_ARM64
-            : undefined, // Bug currently where there is no X64_86 option.
+            ? ecrAssets.Platform.LINUX_ARM64 // arm64
+            : ecrAssets.Platform.LINUX_AMD64, // x86
         ...this.props.dockerImageAssetProps,
       },
     );
