@@ -1,3 +1,4 @@
+import path = require('path');
 import * as cdk from 'aws-cdk-lib';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
@@ -300,13 +301,17 @@ export class NextjsStandaloneEcsSite extends Construct {
   }
 
   private createImageAsset(): ecrAssets.DockerImageAsset {
+    const pathToDockerfile = path.join(
+      process.cwd(),
+      this.props.dockerImageAssetProps?.directory ??
+          DEFAULT_PATH_TO_DOCKERFILE,
+    );
+
     return new ecrAssets.DockerImageAsset(
       this,
       `${this.id}-DockerImageAsset`,
       {
-        directory:
-          this.props.dockerImageAssetProps?.directory ??
-          DEFAULT_PATH_TO_DOCKERFILE,
+        directory: pathToDockerfile,
         platform:
           this.props.cpuArchitecture === ecs.CpuArchitecture.ARM64
             ? ecrAssets.Platform.LINUX_ARM64
