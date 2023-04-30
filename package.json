@@ -3,7 +3,7 @@
   "description": "A CDK Construct for Next.js to deploy to an ISR capable ECS Fargate Service and Task",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dkershner/cdk-nextjs-standalone-ecs.git"
+    "url": "https://github.com/dkershner6/cdk-nextjs-standalone-ecs.git"
   },
   "scripts": {
     "build": "npx projen build",
