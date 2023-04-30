@@ -149,6 +149,7 @@ Any object.
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.cluster">cluster</a></code> | <code>aws-cdk-lib.aws_ecs.Cluster</code> | *No description.* |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.container">container</a></code> | <code>aws-cdk-lib.aws_ecs.ContainerDefinition</code> | *No description.* |
+| <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.dockerImageAsset">dockerImageAsset</a></code> | <code>aws-cdk-lib.aws_ecr_assets.DockerImageAsset</code> | *No description.* |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.fileSystem">fileSystem</a></code> | <code>aws-cdk-lib.aws_efs.FileSystem</code> | *No description.* |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.fileSystemAccessPoint">fileSystemAccessPoint</a></code> | <code>aws-cdk-lib.aws_efs.AccessPoint</code> | *No description.* |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.service">service</a></code> | <code>aws-cdk-lib.aws_ecs.FargateService</code> | *No description.* |
@@ -186,6 +187,16 @@ public readonly container: ContainerDefinition;
 ```
 
 - *Type:* aws-cdk-lib.aws_ecs.ContainerDefinition
+
+---
+
+##### `dockerImageAsset`<sup>Required</sup> <a name="dockerImageAsset" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSite.property.dockerImageAsset"></a>
+
+```typescript
+public readonly dockerImageAsset: DockerImageAsset;
+```
+
+- *Type:* aws-cdk-lib.aws_ecr_assets.DockerImageAsset
 
 ---
 
@@ -1583,10 +1594,10 @@ const nextjsStandaloneEcsSiteProps: NextjsStandaloneEcsSiteProps = { ... }
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.elbTargetGroup">elbTargetGroup</a></code> | <code>aws-cdk-lib.aws_elasticloadbalancingv2.IApplicationTargetGroup</code> | Must be on an ELB within the provided VPC. |
-| <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.image">image</a></code> | <code>aws-cdk-lib.aws_ecs.ContainerImage</code> | Due to the complexity around maintaining references to Dockerfile and context, this is better built outside of this construct. |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.vpc">vpc</a></code> | <code>aws-cdk-lib.aws_ec2.IVpc</code> | *No description.* |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.clusterProps">clusterProps</a></code> | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsClusterProps">NextjsStandaloneEcsClusterProps</a></code> | Deviations from default settings: - "enableFargateCapacityProviders" is set to true. |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.containerProps">containerProps</a></code> | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsContainerDefinitionOptions">NextjsStandaloneEcsContainerDefinitionOptions</a></code> | Complete deviation from default settings (as is required), but this is provided for overrides. |
+| <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.cpuArchitecture">cpuArchitecture</a></code> | <code>aws-cdk-lib.aws_ecs.CpuArchitecture</code> | Set your desired CPU architecture. |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.dockerImageAssetProps">dockerImageAssetProps</a></code> | <code>aws-cdk-lib.aws_ecr_assets.DockerImageAssetProps</code> | "platform" handled by this construct, do not recommend providing. |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.fileSystemAccessPointProps">fileSystemAccessPointProps</a></code> | <code>aws-cdk-lib.aws_efs.AccessPointOptions</code> | Complete deviation from default settings. |
 | <code><a href="#cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.fileSystemPort">fileSystemPort</a></code> | <code>number</code> | The port on which the file system is available. |
@@ -1611,31 +1622,6 @@ public readonly elbTargetGroup: IApplicationTargetGroup;
 Must be on an ELB within the provided VPC.
 
 ---
-
-##### `image`<sup>Required</sup> <a name="image" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.image"></a>
-
-```typescript
-public readonly image: ContainerImage;
-```
-
-- *Type:* aws-cdk-lib.aws_ecs.ContainerImage
-
-Due to the complexity around maintaining references to Dockerfile and context, this is better built outside of this construct.
-
----
-
-*Example*
-
-```typescript
-const nextjsDockerImage = new ecrAssets.DockerImageAsset(this, 'NextjsDockerImage', {
- directory: "./"
-});
-
-image: ecs.ContainerImage.fromDockerImageAsset(
-  nextjsDockerImage
-)
-```
-
 
 ##### `vpc`<sup>Required</sup> <a name="vpc" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.vpc"></a>
 
@@ -1670,6 +1656,23 @@ public readonly containerProps: NextjsStandaloneEcsContainerDefinitionOptions;
 Complete deviation from default settings (as is required), but this is provided for overrides.
 
 This will create an appropriate health check for the Next.js application, set sensible logging, the image, and the port.
+
+---
+
+##### `cpuArchitecture`<sup>Optional</sup> <a name="cpuArchitecture" id="cdk-nextjs-standalone-ecs.NextjsStandaloneEcsSiteProps.property.cpuArchitecture"></a>
+
+```typescript
+public readonly cpuArchitecture: CpuArchitecture;
+```
+
+- *Type:* aws-cdk-lib.aws_ecs.CpuArchitecture
+- *Default:* ecs.CpuArchitecture.X86_64
+
+Set your desired CPU architecture.
+
+Must be X86_64 if using FARGATE_SPOT, currently.
+To build ARM64 on an X86_64 machine, you must have emulators installed. You can use this command:
+docker run -it --rm --privileged tonistiigi/binfmt --install all
 
 ---
 

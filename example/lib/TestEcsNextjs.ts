@@ -7,7 +7,6 @@ import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as r53Targets from "aws-cdk-lib/aws-route53-targets";
-import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
 
 import { Construct } from "constructs";
 import { NextjsStandaloneEcsSite } from "cdk-nextjs-standalone-ecs";
@@ -70,14 +69,9 @@ export class TestEcsNextjsStack extends cdk.Stack {
             targetGroups: [targetGroup],
         });
 
-        const imageAsset = new ecrAssets.DockerImageAsset(this, "NextjsImage", {
-            directory: "./",
-        });
-
        const site = new NextjsStandaloneEcsSite(this, "NextjsSite", {
             vpc: this.vpc,
             elbTargetGroup: targetGroup,
-            image: ecs.ContainerImage.fromDockerImageAsset(imageAsset),
         });
 
         const serviceAutoScale = site.service.autoScaleTaskCount({
