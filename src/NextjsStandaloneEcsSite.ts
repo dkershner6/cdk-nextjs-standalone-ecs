@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import path = require('path');
 import * as cdk from 'aws-cdk-lib';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
@@ -25,24 +27,9 @@ export const NEXTJS_VOLUME_NAME = 'nextjs-standalone-volume';
 export interface NextjsStandaloneEcsSiteProps {
   readonly vpc: ec2.IVpc;
   /**
-   * Must be on an ELB within the provided VPC.
-   */
+     * Must be on an ELB within the provided VPC.
+     */
   readonly elbTargetGroup: elb.IApplicationTargetGroup;
-
-  /**
-   * Due to the complexity around maintaining references to Dockerfile and context,
-   * this is better built outside of this construct.
-   *
-   * @example
-   * const nextjsDockerImage = new ecrAssets.DockerImageAsset(this, 'NextjsDockerImage', {
-   *  directory: "./"
-   * });
-   *
-   * image: ecs.ContainerImage.fromDockerImageAsset(
-   *   nextjsDockerImage
-   * )
-   */
-  readonly image: ecs.ContainerImage;
 
   /**
      * The port on which the file system is available.
@@ -50,6 +37,16 @@ export interface NextjsStandaloneEcsSiteProps {
      * @default 2049
      */
   readonly fileSystemPort?: number;
+
+  /**
+     * Set your desired CPU architecture.
+     * Must be X86_64 if using FARGATE_SPOT, currently.
+     * To build ARM64 on an X86_64 machine, you must have emulators installed. You can use this command:
+     * docker run -it --rm --privileged tonistiigi/binfmt --install all
+     *
+     * @default ecs.CpuArchitecture.X86_64
+     */
+  readonly cpuArchitecture?: ecs.CpuArchitecture;
 
   /**
      * The POSIX user ID of the next.js docker user.
@@ -175,6 +172,8 @@ export class NextjsStandaloneEcsSite extends Construct {
   public readonly taskDefinition: ecs.TaskDefinition;
   public readonly volume: ecs.Volume;
 
+  public readonly dockerImageAsset: ecrAssets.DockerImageAsset;
+
   public readonly container: ecs.ContainerDefinition;
   public readonly service: ecs.FargateService;
 
@@ -195,6 +194,7 @@ export class NextjsStandaloneEcsSite extends Construct {
     this.fileSystemAccessPoint = this.createFileSystemAccessPoint();
     this.taskDefinition = this.createTaskDefinition();
     this.volume = this.createVolume();
+    this.dockerImageAsset = this.createImageAsset();
     this.container = this.createContainer();
     this.service = this.createService();
   }
@@ -247,6 +247,12 @@ export class NextjsStandaloneEcsSite extends Construct {
       `${this.id}-TaskDefinition`,
       {
         ...this.props.taskDefinitionProps,
+        runtimePlatform: {
+          operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
+          cpuArchitecture:
+            this.props.cpuArchitecture ??
+            DEFAULT_NEXTJS_ECS_CPU_ARCHITECTURE,
+        },
       },
     );
 
@@ -295,6 +301,27 @@ export class NextjsStandaloneEcsSite extends Construct {
     return volume;
   }
 
+  private createImageAsset(): ecrAssets.DockerImageAsset {
+    const pathToDockerfile = path.join(
+      process.cwd(),
+      this.props.dockerImageAssetProps?.directory ??
+          DEFAULT_PATH_TO_DOCKERFILE,
+    );
+
+    return new ecrAssets.DockerImageAsset(
+      this,
+      `${this.id}-DockerImageAsset`,
+      {
+        directory: pathToDockerfile,
+        platform:
+          this.props.cpuArchitecture === ecs.CpuArchitecture.ARM64
+            ? ecrAssets.Platform.LINUX_ARM64
+            : undefined, // Bug currently where there is no X64_86 option.
+        ...this.props.dockerImageAssetProps,
+      },
+    );
+  }
+
   private createContainer(): ecs.ContainerDefinition {
     const nextJsPort =
       this.props.nextjsContainerPort ?? DEFAULT_NEXTJS_CONTAINER_PORT;
@@ -302,7 +329,9 @@ export class NextjsStandaloneEcsSite extends Construct {
     const container = this.taskDefinition.addContainer(
       `${this.id}-Container`,
       {
-        image: this.props.image,
+        image: ecs.ContainerImage.fromDockerImageAsset(
+          this.dockerImageAsset,
+        ),
         portMappings: [{ containerPort: nextJsPort }],
         logging: ecs.LogDrivers.awsLogs({
           streamPrefix:
