@@ -7,7 +7,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   jsiiVersion: '~5.0.0',
   name: 'cdk-nextjs-standalone-ecs',
   projenrcTs: true,
-  repositoryUrl: 'https://github.com/dkershner/cdk-nextjs-standalone-ecs.git',
+  repositoryUrl: 'https://github.com/dkershner6/cdk-nextjs-standalone-ecs.git',
 
   // deps: [],                /* Runtime dependencies of this module. */
   description: 'A CDK Construct for Next.js to deploy to an ISR capable ECS Fargate Service and Task',
