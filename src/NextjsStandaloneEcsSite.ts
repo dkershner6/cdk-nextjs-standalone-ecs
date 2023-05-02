@@ -146,9 +146,13 @@ export class NextjsStandaloneEcsSite extends Construct {
     {
       queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
       headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
-        'Authorization',
-        'CloudFront-Viewer-Country',
-        'Host',
+        'accept',
+        'authorization',
+        'cloudFront-viewer-country',
+        'host',
+        'rsc',
+        'next-router-prefetch',
+        'next-router-state-tree',
       ),
       cookieBehavior: cloudfront.CacheCookieBehavior.all(),
       defaultTtl: cdk.Duration.seconds(0),
