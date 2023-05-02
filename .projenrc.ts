@@ -15,5 +15,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   packageName: 'cdk-nextjs-standalone-ecs', /* The "name" in package.json. */
 
   stability: 'experimental',
+
+  gitignore: ['.DS_STORE'],
 });
 project.synth();
