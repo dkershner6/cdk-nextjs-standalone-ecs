@@ -110,6 +110,7 @@ export class TestEcsNextjsStack extends cdk.Stack {
                     "CachePolicy", 
                     NextjsStandaloneEcsSite.RECOMMENDED_CACHE_POLICY
                 ),
+                allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
                 viewerProtocolPolicy:
                     cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             },
