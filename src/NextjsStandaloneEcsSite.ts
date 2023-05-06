@@ -332,6 +332,7 @@ export class NextjsStandaloneEcsSite extends Construct {
         ),
         portMappings: [{ containerPort: nextJsPort }],
         logging: ecs.LogDrivers.awsLogs({
+          multilinePattern: '^(INFO|DEBUG|WARN|ERROR|CRITICAL|NOTICE|FATAL|Info:|Debug:|Warning:|Error:|Critical:|Notice:|Fatal:)',
           streamPrefix:
             this.props.logStreamPrefix ??
             DEFAULT_NEXTJS_LOG_STREAM_PREFIX,
