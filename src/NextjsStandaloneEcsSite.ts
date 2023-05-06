@@ -342,6 +342,7 @@ export class NextjsStandaloneEcsSite extends Construct {
             'CMD-SHELL',
             `curl -f http://localhost:${nextJsPort} || exit 1`,
           ],
+          startPeriod: cdk.Duration.seconds(15),
           retries: 3,
           timeout: cdk.Duration.seconds(5),
           interval: cdk.Duration.seconds(30),
