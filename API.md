@@ -1,5 +1,9 @@
 # Next.js Standalone ECS Site
 
+## WARNING
+
+**Leaving this here in case someone can use it as a jumping off point, but the copying method used breaks at scale. Ends up being a race between the first container and when the others start up, and they can break one another. Recommend a different strategy.**
+
 [NPM Package](https://www.npmjs.com/package/cdk-nextjs-standalone-ecs)
 
 [![View on Construct Hub](https://constructs.dev/badge?package=cdk-nextjs-standalone-ecs)](https://constructs.dev/packages/cdk-nextjs-standalone-ecs)
